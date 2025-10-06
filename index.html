@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Beginner's Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0F172A; /* bg-slate-900 */
+        }
+        .step-screen {
+            display: none;
+        }
+        .step-screen.active {
+            display: block;
+        }
+        .card {
+            background-color: rgba(30, 41, 59, 0.5); /* bg-slate-800 with opacity */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid #334155; /* border-slate-700 */
+            transition: all 0.3s ease;
+        }
+        .os-button {
+            transition: all 0.3s ease;
+        }
+        .os-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .command-card {
+             background-color: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid #334155;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .animated-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="text-gray-200">
+
+    <header id="main-header" class="hidden fixed top-0 left-0 right-0 bg-slate-900/80 backdrop-blur-sm z-50 border-b border-slate-700">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <button onclick="showStep('step-os')" class="text-white font-bold text-lg hover:text-cyan-400 transition-colors">Git Guide</button>
+            <nav class="hidden sm:flex items-center space-x-6">
+                 <button onclick="showCommands('clone')" class="text-sm text-gray-300 hover:text-amber-400 transition-colors">Clone</button>
+                 <button onclick="showCommands('new-project')" class="text-sm text-gray-300 hover:text-cyan-400 transition-colors">New Project</button>
+                 <button onclick="showCommands('daily-push')" class="text-sm text-gray-300 hover:text-teal-400 transition-colors">Daily Push</button>
+                 <button onclick="showCommands('new-branch')" class="text-sm text-gray-300 hover:text-indigo-400 transition-colors">New Branch</button>
+            </nav>
+             <div class="sm:hidden">
+                <button onclick="showStep('step-main-menu')" class="text-sm text-gray-300 hover:text-white">Menu</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex items-center justify-center min-h-screen p-4 pt-24">
+        <div class="w-full max-w-4xl mx-auto">
+    
+            <!-- Step 1: OS Selection -->
+            <div id="step-os" class="step-screen active animated-fade-in text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-white">GitHub Guide mein Aapka Swagat hai!</h1>
+                <p class="text-gray-400 mt-4 text-lg">Hum shuru se shuruaat karenge. Sabse pehle, apna Operating System chunein.</p>
+                <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <button onclick="selectOS('windows')" class="os-button card rounded-2xl p-8 h-32 flex items-center justify-center">
+                        <h3 class="text-2xl font-bold text-white">Windows</h3>
+                    </button>
+                    <button onclick="selectOS('macos')" class="os-button card rounded-2xl p-8 h-32 flex items-center justify-center">
+                        <h3 class="text-2xl font-bold text-white">macOS</h3>
+                    </button>
+                    <button onclick="selectOS('linux')" class="os-button card rounded-2xl p-8 h-32 flex items-center justify-center">
+                       <h3 class="text-2xl font-bold text-white">Linux</h3>
+                    </button>
+                </div>
+                 <div class="mt-8">
+                    <button onclick="showStep('step-main-menu')" class="text-gray-400 hover:text-white transition-colors underline text-sm">
+                        Pehle se setup kar liya hai? Seedhe Commands par jaayein &rarr;
+                    </button>
+                </div>
+            </div>
+    
+            <!-- Step 2: Terminal Guide -->
+            <div id="step-terminal" class="step-screen animated-fade-in">
+                <h2 class="text-3xl font-bold text-center text-white mb-6">Terminal Kaise Kholein</h2>
+                <div class="card rounded-2xl p-8">
+                    <div id="terminal-instructions"></div>
+                    <div class="mt-8 flex justify-between">
+                        <button onclick="showStep('step-os')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg">Peeche</button>
+                        <button onclick="showStep('step-git-check')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Aage</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Step 3: Git Installation Check -->
+            <div id="step-git-check" class="step-screen animated-fade-in">
+                 <h2 class="text-3xl font-bold text-center text-white mb-6">Check karein Git Install hai ya nahi</h2>
+                 <div class="card rounded-2xl p-8">
+                     <p class="text-gray-300 mb-4">Apne terminal mein neeche diya gaya command likhein aur Enter dabayein. Isse pata chalega ki aapke system mein Git hai ya nahi.</p>
+                     <div class="flex items-center bg-gray-900 rounded-lg p-3">
+                        <code id="git-version-cmd" class="flex-grow text-gray-300 font-mono text-sm">git --version</code>
+                        <button onclick="copyCommand('git-version-cmd', this, 'slate')" class="ml-4 bg-slate-500 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button>
+                     </div>
+                     <div class="mt-6 border border-dashed border-gray-600 rounded-lg p-4">
+                         <p class="text-gray-400 text-sm mb-2">Command chalane ke baad kya hua?</p>
+                         <div class="flex flex-col sm:flex-row justify-between gap-4">
+                             <div class="flex-1 text-center">
+                                <button onclick="showStep('step-git-setup')" class="w-full h-full bg-green-600/20 border border-green-500 text-green-300 hover:bg-green-600/40 font-bold py-3 px-6 rounded-lg">
+                                    Version Number Dikha
+                                </button>
+                                <p class="text-xs text-gray-500 mt-2">Jaise: <code class="text-green-400">git version 2.37.1...</code></p>
+                             </div>
+                             <div class="flex-1 text-center">
+                                <button onclick="showStep('step-git-install')" class="w-full h-full bg-red-600/20 border border-red-500 text-red-300 hover:bg-red-600/40 font-bold py-3 px-6 rounded-lg">
+                                    Error Aaya
+                                </button>
+                                <p class="text-xs text-gray-500 mt-2">Jaise: <code class="text-red-400">'git' is not recognized...</code></p>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="mt-8">
+                        <button onclick="showStep('step-terminal')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg">Peeche</button>
+                     </div>
+                 </div>
+            </div>
+            
+            <!-- Step 4: Git Installation Guide -->
+            <div id="step-git-install" class="step-screen animated-fade-in">
+                <h2 class="text-3xl font-bold text-center text-white mb-6">Git Install Karein</h2>
+                <div class="card rounded-2xl p-8">
+                    <p class="text-gray-300 mb-4">Chinta na karein! Git install karna aasan hai. Neeche diye gaye instructions follow karein.</p>
+                    <div id="install-instructions"></div>
+                    <div class="mt-8 flex justify-between">
+                        <button onclick="showStep('step-git-check')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg">Peeche</button>
+                        <button onclick="showStep('step-git-check')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Maine Install kar liya, ab check karein</button>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Step 5: Git Setup -->
+            <div id="step-git-setup" class="step-screen animated-fade-in">
+                <h2 class="text-3xl font-bold text-center text-white mb-6">Pehli Baar Git Setup Karein</h2>
+                <div class="card rounded-2xl p-8">
+    
+                    <!-- Pro Tip for Windows Users -->
+                    <div id="windows-pro-tip" class="hidden bg-slate-700 p-4 rounded-lg mb-6 border border-cyan-500">
+                        <h4 class="font-bold text-cyan-400">Windows Pro Tip!</h4>
+                        <p class="text-gray-300 text-sm mt-2">
+                            Ab jab Git install ho gaya hai, to aapke paas <strong>Git Bash</strong> naam ka ek behtar terminal bhi hai. Hum salah denge ki aap ab se commands chalane ke liye iska istemaal karein.
+                        </p>
+                        <p class="text-gray-400 text-xs mt-2">Ise kholne ke liye Start Menu mein "Git Bash" search karein.</p>
+                    </div>
+    
+                    <p class="text-gray-300 mb-4">Bahut badhiya! Ab Git ko apna naam aur email batana zaroori hai. Yeh jaankari har commit ke saath save hoti hai, taaki pata chale ki changes kisne kiye hain. Yeh ek baar hi karna hota hai.</p>
+                    <p class="text-gray-400 text-sm mb-6">Neeche diye gaye commands ko terminal mein chalayein. <code class="bg-gray-900 text-xs p-1 rounded">"Your Name"</code> aur <code class="bg-gray-900 text-xs p-1 rounded">"youremail@example.com"</code> ko apni details se badal lein.</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-sm text-cyan-400 mb-1 font-semibold">1. Apna Naam Set Karein</p>
+                            <div class="flex items-center bg-gray-900 rounded-lg p-3">
+                               <code id="git-config-name" class="flex-grow text-gray-300 font-mono text-sm">git config --global user.name "Your Name"</code>
+                               <button onclick="copyCommand('git-config-name', this, 'cyan')" class="ml-4 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button>
+                            </div>
+                        </div>
+                        <div>
+                             <p class="text-sm text-cyan-400 mb-1 font-semibold">2. Apna Email Set Karein</p>
+                            <div class="flex items-center bg-gray-900 rounded-lg p-3">
+                               <code id="git-config-email" class="flex-grow text-gray-300 font-mono text-sm">git config --global user.email "youremail@example.com"</code>
+                               <button onclick="copyCommand('git-config-email', this, 'cyan')" class="ml-4 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="mt-8 flex justify-between">
+                        <button onclick="showStep('step-git-check')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg">Peeche</button>
+                        <button onclick="showStep('step-main-menu')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">Setup Ho Gaya, Aage Badhein</button>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Step 6: Main Menu -->
+            <div id="step-main-menu" class="step-screen animated-fade-in text-center">
+                <h1 class="text-4xl font-bold text-white">Awesome! Git taiyaar hai.</h1>
+                <p class="text-gray-400 mt-4 text-lg">Ab aap kya karna chahte hain?</p>
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                     <button onclick="showCommands('clone')" class="card p-6 rounded-2xl text-left hover:bg-slate-700">
+                        <h3 class="text-xl font-bold text-amber-400">1. Repo Clone Karein</h3>
+                        <p class="text-gray-400 mt-2 text-sm">GitHub par maujood kisi project ko apne computer par laayein.</p>
+                     </button>
+                     <button onclick="showCommands('new-project')" class="card p-6 rounded-2xl text-left hover:bg-slate-700">
+                        <h3 class="text-xl font-bold text-cyan-400">2. Naya Project Push Karein</h3>
+                        <p class="text-gray-400 mt-2 text-sm">Apne computer se naya folder/project pehli baar GitHub par daalein.</p>
+                     </button>
+                     <button onclick="showCommands('daily-push')" class="card p-6 rounded-2xl text-left hover:bg-slate-700">
+                        <h3 class="text-xl font-bold text-teal-400">3. Daily Code Push Karein</h3>
+                        <p class="text-gray-400 mt-2 text-sm">Maujooda project mein kiye gaye changes ko GitHub par save karein.</p>
+                     </button>
+                     <button onclick="showCommands('new-branch')" class="card p-6 rounded-2xl text-left hover:bg-slate-700">
+                        <h3 class="text-xl font-bold text-indigo-400">4. Nayi Branch par Push Karein</h3>
+                        <p class="text-gray-400 mt-2 text-sm">Project mein ek nayi branch banakar uspar code push karein.</p>
+                     </button>
+                </div>
+                 <button onclick="showStep('step-os')" class="mt-10 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg">Shuru se start karein</button>
+            </div>
+    
+            <!-- Step 7: Commands View -->
+            <div id="step-commands" class="step-screen animated-fade-in">
+                 <div id="commands-container" class="w-full max-w-screen-xl mx-auto"></div>
+                 <div class="text-center mt-10">
+                    <button onclick="showStep('step-main-menu')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg">Back to Menu</button>
+                 </div>
+            </div>
+    
+            <footer class="text-center text-gray-600 text-sm py-8">
+                Developed by Prashant Goswami
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        let userOS = '';
+
+        const instructions = {
+            terminal: {
+                windows: `
+                    <h3 class="text-xl font-bold text-white mb-3">Windows par Terminal Kholna</h3>
+                    <p class="text-gray-300">Git commands chalane ke liye, aapko ek terminal ki zaroorat hogi. Windows mein, iske liye <strong>Command Prompt</strong> pehle se hota hai.</p>
+                    <p class="text-gray-300 mt-2">1. Windows Start Menu par click karein.</p>
+                    <p class="text-gray-300 mt-2">2. Search bar mein "Command Prompt" type karein.</p>
+                    <p class="text-gray-300 mt-2">3. 'Command Prompt' application par click karke use kholein.</p>
+                `,
+                macos: `
+                    <h3 class="text-xl font-bold text-white mb-3">macOS par Terminal</h3>
+                    <p class="text-gray-300">1. Spotlight Search kholne ke liye <kbd class="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">Cmd</kbd> + <kbd class="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">Space</kbd> dabayein.</p>
+                    <p class="text-gray-300">2. "Terminal" type karein aur Enter dabayein.</p>
+                    <p class="text-gray-400 mt-4 text-sm">Ya fir, Applications folder > Utilities folder > Terminal.app par double-click karein.</p>
+                `,
+                linux: `
+                    <h3 class="text-xl font-bold text-white mb-3">Linux par Terminal</h3>
+                    <p class="text-gray-300">1. Terminal kholne ke liye keyboard shortcut <kbd class="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">Ctrl</kbd> + <kbd class="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">Alt</kbd> + <kbd class="px-2 py-1.5 text-xs font-semibold text-gray-800 bg-gray-100 border border-gray-200 rounded-lg">T</kbd> istemaal karein.</p>
+                    <p class="text-gray-400 mt-4 text-sm">Aap applications menu mein jaakar bhi "Terminal" search kar sakte hain.</p>
+                `
+            },
+            install: {
+                windows: `
+                    <p class="text-gray-300 mb-4">1. Neeche diye gaye button par click karke Git ki official website par jaayein.</p>
+                    <a href="https://git-scm.com/download/win" target="_blank" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">Download Git for Windows</a>
+                    <p class="text-gray-300 mt-4">2. Installer download ho jaane ke baad, uspar double-click karein aur screen par diye gaye instructions follow karein. Jyadatar users ke liye default settings theek hain.</p>
+                `,
+                 macos: `
+                    <p class="text-gray-300 mb-4">Sabse aasan tareeka Homebrew use karna hai. Agar aapke paas Homebrew nahi hai, to pehle use install karein, fir Git. Apne terminal mein yeh commands chalayein:</p>
+                    <div class="bg-gray-900 rounded-lg p-3 my-2"><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></div>
+                    <div class="bg-gray-900 rounded-lg p-3 my-2"><code>brew install git</code></div>
+                    <p class="text-gray-400 mt-4 text-sm">Ya fir, aap neeche diye gaye link se bhi installer download kar sakte hain.</p>
+                    <a href="https://git-scm.com/download/mac" target="_blank" class="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">Download Git for macOS</a>
+                `,
+                 linux: `
+                    <p class="text-gray-300 mb-4">Aap apne Linux distribution ke package manager se Git aasani se install kar sakte hain. Apne terminal mein sahi command chalayein:</p>
+                    <p class="text-white mt-2 font-semibold">Debian/Ubuntu:</p>
+                    <div class="bg-gray-900 rounded-lg p-3 my-2"><code>sudo apt-get install git</code></div>
+                     <p class="text-white mt-2 font-semibold">Fedora:</p>
+                    <div class="bg-gray-900 rounded-lg p-3 my-2"><code>sudo dnf install git</code></div>
+                `
+            }
+        };
+        
+        const commandsHTML = {
+            clone: `
+                <div class="command-card rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold text-amber-400 text-center mb-6">1. Repo Clone Karein</h2>
+                    <div class="space-y-4 flex-grow flex flex-col justify-start">
+                        <div class="step"><p class="text-sm text-amber-400 mb-1 font-semibold">Step 1: URL Copy Karein</p><p class="text-xs text-gray-400">GitHub par repository page par jaayein, 'Code' button par click karein aur HTTPS URL copy karein.</p></div>
+                        <div class="step"><p class="text-sm text-amber-400 mb-1 font-semibold">Step 2: Terminal Open Karein</p><p class="text-xs text-gray-400">Apne computer par woh folder chunein jahan project save karna hai, aur wahan terminal kholein.</p></div>
+                        <div class="step"><p class="text-sm text-amber-400 mb-1 font-semibold">Step 3: Command Run Karein</p><p class="text-xs text-gray-400 mb-2">Neeche diye command ko terminal mein paste karein aur Enter dabayein.</p><div class="flex items-center bg-gray-900 rounded-lg p-3"><code id="cmd14" class="flex-grow text-gray-300 font-mono text-xs overflow-hidden">git clone https://...</code><button onclick="copyCommand('cmd14_full', this, 'amber')" class="ml-4 bg-amber-500 hover:bg-amber-600 text-white font-bold py-1 px-3 rounded-md text-sm shrink-0">Copy</button><code id="cmd14_full" class="hidden">git clone https://github.com/username/repo-name.git</code></div></div>
+                    </div>
+                </div>
+            `,
+            'new-project': `
+                <div class="command-card rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold text-cyan-400 text-center mb-6">2. Naya Project Push Karein</h2>
+                     <div class="space-y-3 flex-grow flex flex-col justify-around">
+                        <div class="step"><p class="text-xs text-cyan-400 mb-1 font-semibold">1. Initialize Repository</p><div class="flex items-center bg-gray-900 rounded-lg p-2"><code id="cmd1" class="flex-grow text-gray-300 font-mono text-sm">git init</code><button onclick="copyCommand('cmd1', this, 'cyan')" class="ml-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                        <div class="step"><p class="text-xs text-cyan-400 mb-1 font-semibold">2. Sabhi Files Add Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-2"><code id="cmd2" class="flex-grow text-gray-300 font-mono text-sm">git add .</code><button onclick="copyCommand('cmd2', this, 'cyan')" class="ml-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                        <div class="step"><p class="text-xs text-cyan-400 mb-1 font-semibold">3. Pehla Commit</p><div class="flex items-center bg-gray-900 rounded-lg p-2"><code id="cmd3" class="flex-grow text-gray-300 font-mono text-sm">git commit -m "..."</code><button onclick="copyCommand('cmd3_full', this, 'cyan')" class="ml-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button><code id="cmd3_full" class="hidden">git commit -m "Initial commit"</code></div></div>
+                        <div class="step"><p class="text-xs text-cyan-400 mb-1 font-semibold">4. Branch ko 'main' Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-2"><code id="cmd4" class="flex-grow text-gray-300 font-mono text-sm">git branch -M main</code><button onclick="copyCommand('cmd4', this, 'cyan')" class="ml-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                        <div class="step"><p class="text-xs text-cyan-400 mb-1 font-semibold">5. Remote URL Jodein</p><div class="flex items-center bg-gray-900 rounded-lg p-2"><code id="cmd5" class="flex-grow text-gray-300 font-mono text-xs">git remote add origin...</code><button onclick="copyCommand('cmd5_full', this, 'cyan')" class="ml-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button><code id="cmd5_full" class="hidden">git remote add origin https://github.com/username/repo-name.git</code></div></div>
+                        <div class="step"><p class="text-xs text-cyan-400 mb-1 font-semibold">6. Pehli Baar Push Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-2"><code id="cmd6" class="flex-grow text-gray-300 font-mono text-sm">git push -u origin main</code><button onclick="copyCommand('cmd6', this, 'cyan')" class="ml-2 bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                    </div>
+                </div>
+            `,
+            'daily-push': `
+                <div class="command-card rounded-2xl p-6">
+                     <h2 class="text-2xl font-bold text-teal-400 text-center mb-6">3. Daily Code Push Karein</h2>
+                     <div class="space-y-4 flex-grow flex flex-col justify-around">
+                        <div class="step"><p class="text-sm text-teal-400 mb-1 font-semibold">1. Changes Add Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-3"><code id="cmd7" class="flex-grow text-gray-300 font-mono text-sm">git add .</code><button onclick="copyCommand('cmd7', this, 'teal')" class="ml-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                        <div class="step"><p class="text-sm text-teal-400 mb-1 font-semibold">2. Changes Commit Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-3"><code id="cmd8" class="flex-grow text-gray-300 font-mono text-sm">git commit -m "Update message"</code><button onclick="copyCommand('cmd8', this, 'teal')" class="ml-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                        <div class="step"><p class="text-sm text-teal-400 mb-1 font-semibold">3. Changes Push Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-3"><code id="cmd9" class="flex-grow text-gray-300 font-mono text-sm">git push origin main</code><button onclick="copyCommand('cmd9', this, 'teal')" class="ml-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                     </div>
+                </div>
+            `,
+            'new-branch': `
+                 <div class="command-card rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold text-indigo-400 text-center mb-6">4. Nayi Branch par Push</h2>
+                     <div class="space-y-4 flex-grow flex flex-col justify-around">
+                        <div class="step"><p class="text-sm text-indigo-400 mb-1 font-semibold">1. Nayi Branch Banayein</p><div class="flex items-center bg-gray-900 rounded-lg p-3"><code id="cmd10" class="flex-grow text-gray-300 font-mono text-sm">git checkout -b branch-name</code><button onclick="copyCommand('cmd10', this, 'indigo')" class="ml-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                        <div class="step"><p class="text-sm text-indigo-400 mb-1 font-semibold">2. Changes Add Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-3"><code id="cmd11" class="flex-grow text-gray-300 font-mono text-sm">git add .</code><button onclick="copyCommand('cmd11', this, 'indigo')" class="ml-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                        <div class="step"><p class="text-sm text-indigo-400 mb-1 font-semibold">3. Changes Commit Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-3"><code id="cmd12" class="flex-grow text-gray-300 font-mono text-sm">git commit -m "Feature message"</code><button onclick="copyCommand('cmd12', this, 'indigo')" class="ml-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                        <div class="step"><p class="text-sm text-indigo-400 mb-1 font-semibold">4. Branch ko Push Karein</p><div class="flex items-center bg-gray-900 rounded-lg p-3"><code id="cmd13" class="flex-grow text-gray-300 font-mono text-sm">git push origin branch-name</code><button onclick="copyCommand('cmd13', this, 'indigo')" class="ml-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy</button></div></div>
+                    </div>
+                </div>
+            `
+        };
+
+
+        function showStep(stepId) {
+            document.querySelectorAll('.step-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(stepId).classList.add('active');
+            
+            const header = document.getElementById('main-header');
+            if (stepId === 'step-os') {
+                header.classList.add('hidden');
+            } else {
+                header.classList.remove('hidden');
+            }
+
+            // Show pro-tip only for windows users on setup screen
+            const proTip = document.getElementById('windows-pro-tip');
+            if (stepId === 'step-git-setup' && userOS === 'windows') {
+                proTip.classList.remove('hidden');
+            } else {
+                proTip.classList.add('hidden');
+            }
+        }
+
+        function selectOS(os) {
+            userOS = os;
+            document.getElementById('terminal-instructions').innerHTML = instructions.terminal[os];
+            document.getElementById('install-instructions').innerHTML = instructions.install[os];
+            showStep('step-terminal');
+        }
+
+        function showCommands(type) {
+            document.getElementById('commands-container').innerHTML = commandsHTML[type];
+            showStep('step-commands');
+        }
+
+        function copyCommand(elementId, button, color) {
+            const commandText = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(commandText).then(() => {
+                const originalText = button.innerText;
+                button.innerText = 'Copied!';
+                button.classList.remove(`bg-${color}-500`, `hover:bg-${color}-600`);
+                button.classList.add('bg-green-500');
+                setTimeout(() => {
+                    button.innerText = originalText;
+                    button.classList.add(`bg-${color}-500`, `hover:bg-${color}-600`);
+                    button.classList.remove('bg-green-500');
+                }, 2000);
+            });
+        }
+    </script>
+
+</body>
+</html>
+
